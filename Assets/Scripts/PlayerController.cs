@@ -31,6 +31,13 @@ public class PlayerController : MonoBehaviour
             facingDir = moveInput.normalized;
             sr.flipX = (moveInput.x == 0) ? sr.flipX : moveInput.x > 0;
         }
+
+        // when true run interact tile fucntion and reset interact to false.
+        if(interactInput)
+        {
+            TryInteractTile();
+            interactInput = false;
+        }
     }
     // physics calculation.
     void FixedUpdate()
@@ -39,13 +46,28 @@ public class PlayerController : MonoBehaviour
         rig.velocity = moveInput.normalized * moveSpeed;
     }
 
+    void TryInteractTile()
+    {
+        // where to aim and recive hit data.
+        RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position + facingDir, Vector3.up, 0.1f, interactLayerMask);
+
+        // check to see hit something.
+        if(hit.collider != null)
+        {
+            // check 'something' is component attached with FieldTile and assign to type FieldTile varaible.
+            FieldTile tile = hit.collider.GetComponent<FieldTile>();
+            // interact with that object.
+            tile.Interact();
+        }
+    }
+
     // called wen pressing on movement key.
     public void OnMoveInput (InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
     }
 
-    // performign interact to true on frame.
+    // performing interact to true on frame.
     public void OnInteractInput(InputAction.CallbackContext context)
     {
         if(context.phase == InputActionPhase.Performed)
