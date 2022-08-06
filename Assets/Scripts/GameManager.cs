@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public int curDay;
     public int money;
-    public void cropInventory;
+    public int cropInventory;
 
     // which crop currently wanting to plant.
     public CropData selectedCropToPlant;
@@ -17,6 +17,19 @@ public class GameManager : MonoBehaviour
 
     // Singleton - globally accessible class that exists in the scene, but once.
     public static GameManager instance;
+
+    void OnEnable()
+    {
+        Crop.onPlantCrop += OnPlantCrop;
+        Crop.onHarvestCrop += OnHarvestCrop;
+    }
+
+    void OnDisable()
+    {
+        Crop.onPlantCrop -= OnPlantCrop;
+        Crop.onHarvestCrop -= OnHarvestCrop;
+    }
+
 
     void Awake()
     {
