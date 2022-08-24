@@ -2,39 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using TMPro;
 public class GameManager : MonoBehaviour
 {
     public int curDay;
     public int money;
     public int cropInventory;
-
-    // which crop currently wanting to plant.
     public CropData selectedCropToPlant;
-
-    // New day when clicked.
+    public TextMeshProUGUI statsText;
     public event UnityAction onNewDay;
-
-    // Singleton - globally accessible class that exists in the scene, but once.
+    // Singleton
     public static GameManager instance;
-
     void OnEnable()
     {
         Crop.onPlantCrop += OnPlantCrop;
         Crop.onHarvestCrop += OnHarvestCrop;
     }
-
     void OnDisable()
     {
         Crop.onPlantCrop -= OnPlantCrop;
         Crop.onHarvestCrop -= OnHarvestCrop;
     }
-
-
     void Awake()
     {
-        // if old world exists destroy, create new world.
-        if(instance != null && instance != this)
+        // Initialize the singleton.
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
         }
@@ -43,46 +35,50 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
     }
-
-    // called when next day.
+    // Called when we press the next day button.
     public void SetNextDay()
     {
-
+        curDay++;
+        onNewDay?.Invoke();
+        UpdateStatsText();
     }
-
-    // substract crop from bag.
-    public void OnPlantCrop (CropData crop)
+    // Called when a crop has been planted.
+    // Listening to the Crop.onPlantCrop event.
+    public void OnPlantCrop(CropData cop)
     {
         cropInventory--;
+        UpdateStatsText();
     }
-
-    // sell crop and give money.
-    public void OnHarvestCrop (CropData crop)
+    // Called when a crop has been harvested.
+    // Listening to the Crop.onCropHarvest event.
+    public void OnHarvestCrop(CropData crop)
     {
         money += crop.sellPrice;
+        UpdateStatsText();
     }
-
-    // crop wanting to be purchased.
-    public void PurchaseCrop (CropData crop)
+    // Called when we want to purchase a crop.
+    public void PurchaseCrop(CropData crop)
     {
-
+        money -= crop.purchasePrice;
+        cropInventory++;
+        UpdateStatsText();
     }
-
-    // able to plant or not?
-    public bool CanPlantCrop ()
+    // Do we have enough crops to plant?
+    public bool CanPlantCrop()
     {
-        return true;
+        return cropInventory > 0;
     }
-
-    // buy crop button.
-    public void OnBuyCropButtom (CropData crop)
+    // Called when the buy crop button is pressed.
+    public void OnBuyCropButton(CropData crop)
     {
-
+        if (money >= crop.purchasePrice)
+        {
+            PurchaseCrop(crop);
+        }
     }
-
-    // update text stats text on screen.
-    void UodateStatsText ()
+    // Update the stats text to display our current stats.
+    void UpdateStatsText()
     {
-
+        statsText.text = $"Day: {curDay}\nMoney: ${money}\nCrop Inventory: {cropInventory}";
     }
 }
