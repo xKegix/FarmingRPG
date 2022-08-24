@@ -53,13 +53,13 @@ public class GameManager : MonoBehaviour
     // substract crop from bag.
     public void OnPlantCrop (CropData crop)
     {
-
+        cropInventory--;
     }
 
     // sell crop and give money.
     public void OnHarvestCrop (CropData crop)
     {
-
+        money += crop.sellPrice;
     }
 
     // crop wanting to be purchased.
@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
     }
 
     // able to plant or not?
-    public bool CanPlantCrop (CropData crop)
+    public bool CanPlantCrop ()
     {
         return true;
     }

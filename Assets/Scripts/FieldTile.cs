@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FieldTile : MonoBehaviour
 {
-    // private Crop curCrop;
+    private Crop curCrop;
     // prefab instantiated on top of tile.
     public GameObject cropPrefab;
 
@@ -24,6 +24,71 @@ public class FieldTile : MonoBehaviour
 
     public void Interact()
     {
-        Debug.Log("Interacted!");
+        if(!tilled)
+        {
+            Till();
+        }
+        else if(!HasCrop() && GameManager.instance.CanPlantCrop())
+        {
+            PlantNewCrop(GameManager.instance.selectedCropToPlant);
+        }
+        else if(HasCrop() && curCrop.CanHarvest())
+        {
+            curCrop.Harvest();
+        }
+        else
+        {
+            Water();
+        }
     }
+
+    void PlantNewCrop (CropData crop)
+    {
+        if(!tilled)
+       
+            return;
+
+            curCrop = Instantiate(cropPrefab, transform).GetComponent<Crop>();
+            curCrop.Plant(crop);
+
+            GameManager.instance.onNewDay += OnNewDay;
+        
+    }
+
+    void Till ()
+    {
+        tilled = true;
+        sr.sprite = tilledSprite;
+    }
+
+    void Water ()
+    {
+        sr.sprite = waterTilledSprite;
+
+        if(HasCrop())
+        {
+            curCrop.Water();
+        }
+    }
+
+    void OnNewDay ()
+    {
+        if (curCrop == null)
+        {
+            tilled = false;
+            sr.sprite = grassSprite;
+            GameManager.instance.onNewDay -= OnNewDay;
+        }
+        else if (curCrop != null)
+        {
+            sr.sprite = tilledSprite;
+            curCrop.NewDayCheck();
+        }
+    }
+
+    bool HasCrop ()
+    {
+        return curCrop != null;
+    }
+
 }
