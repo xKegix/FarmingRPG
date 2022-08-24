@@ -1,11 +1,15 @@
 # :farmer: Farming RPG :cowboy_hat_face:
 
 :herb:Day and night cycle. 
+</br>
 :herb:Crops change as they grow. 
+</br>
 :herb:Able to harvest and sell.
+</br>
 :herb:Fail to water = crops die.
-:herb:relaxing.
-
+</br>
+:herb:Relaxing. :white_check_mark:
+</br>
 
 ## Demo
 
