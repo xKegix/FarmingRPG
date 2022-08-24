@@ -1,4 +1,4 @@
-# Farming RPG 
+# :farmer: Farming RPG :cowboy_hat_face:
 
 Day and night cycle, crops change as they grow. Able to harvest and sell.
 
